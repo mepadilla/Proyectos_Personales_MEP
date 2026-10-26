@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        @page { size: A4; margin: 0.8cm; }
+        body { font-family: Helvetica, Arial, sans-serif; font-size: 9px; line-height: 1.2; }
+        
+        table { width: 100%; border-collapse: collapse; margin-bottom: 5px; }
+        th, td { border: 1px solid #000; padding: 3px; vertical-align: middle; }
+        
+        .header-title { font-weight: bold; font-size: 14px; text-align: center; background-color: #e0e0e0; }
+        .section-header { font-weight: bold; font-size: 10px; background-color: #f0f0f0; text-align: center; text-transform: uppercase; }
+        
+        .bold { font-weight: bold; }
+        .center { text-align: center; }
+        .right { text-align: right; }
+        
+        /* Checkbox simulado */
+        .box { display: inline-block; width: 10px; height: 10px; border: 1px solid #000; margin-right: 2px; text-align: center; line-height: 9px; font-size: 8px;}
+        .filled { background-color: #000; color: #fff; }
+        
+        .footer-process { border: 1px solid black; padding: 4px; margin-top: 2px; font-size: 8px; }
+    </style>
+</head>
+<body>
+
+    {% macro check(val, target) %}
+        <span class="box {% if val == target %}filled{% endif %}">{% if val == target %}X{% endif %}</span>{{ target }}
+    {% endmacro %}
+    
+    {% macro check_bool(val) %}
+        SI <span class="box">{% if val == 'SI' %}X{% endif %}</span>
+        NO <span class="box">{% if val == 'NO' %}X{% endif %}</span>
+    {% endmacro %}
+
+    <table>
+        <tr>
+            <td width="20%" class="center bold">
+                PANELLI SERVICES, C.A.<br>RIF: J-50717048-9
+            </td>
+            <td width="60%" class="header-title">FICHA PARA ENSAMBLAJE DE MOTORES SUMERGIBLES</td>
+            <td width="20%">
+                <strong>Orden:</strong> {{ d.orden }}<br>
+                <strong>Fecha:</strong> {{ d.fecha_ingreso }}
+            </td>
+        </tr>
+    </table>
+
+    <table>
+        <tr>
+            <td width="25%"><strong>Marca:</strong> {{ d.marca }}</td>
+            <td width="25%"><strong>Modelo:</strong> {{ d.modelo }}</td>
+            <td width="25%">
+                <strong>Tamaño:</strong> 
+                {{ check(d.tamano, '6"') }} {{ check(d.tamano, '8"') }} {{ check(d.tamano, '10"') }}
+            </td>
+            <td width="25%">
+                <strong>Arranque:</strong>
+                {{ check(d.arranque, 'DOL') }} {{ check(d.arranque, 'YD') }}
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Potencia:</strong> {{ d.potencia_val }} {{ d.potencia_unidad }}</td>
+            <td><strong>Voltaje:</strong> {{ d.voltaje }} V</td>
+            <td colspan="2"><strong>Serial:</strong> {{ d.serial }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td colspan="4" class="section-header">Servicios Eléctricos / Materiales</td></tr>
+        <tr>
+            <td width="25%">Aislante Mylar: {{ d.mat_mylar }}</td>
+            <td width="25%">Aislante DMD: {{ d.mat_dmd }}</td>
+            <td width="25%">Alambre Bobinar: {{ d.mat_alambre }}</td>
+            <td width="25%">Cuñas Mylar: {{ d.mat_cunas }}</td>
+        </tr>
+        <tr>
+            <td>Amarre Redondo: {{ d.mat_amarre_red }}</td>
+            <td>Amarre Plano: {{ d.mat_amarre_plano }}</td>
+            <td>Termocontraíble: {{ d.mat_termo }}</td>
+            <td>Conectores s/Aislar: {{ d.mat_conectores }}</td>
+        </tr>
+        <tr>
+            <td>Masilla Scotchfil: {{ d.mat_masilla }}</td>
+            <td>Cinta Scotch 23: {{ d.mat_cinta23 }}</td>
+            <td>Cinta Scotch 33: {{ d.mat_cinta33 }}</td>
+            <td>Soldadura Estaño: SI</td>
+        </tr>
+        <tr>
+            <td colspan="2">Cable Plano: {{ d.cable_plano }}</td>
+            <td colspan="2">Cable Redondo: {{ d.cable_redondo }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td colspan="4" class="section-header">Servicios Mecánicos y Verificaciones</td></tr>
+        
+        <tr>
+            <td colspan="2"><strong>Verificación Cojinetes y Tazones:</strong> {{ check_bool(d.chk_cojinetes) }}</td>
+            <td colspan="2">Personal: {{ d.chk_cojinetes_pers }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Verificación Rectitud de Rotor:</strong> {{ check_bool(d.chk_rotor) }}</td>
+            <td colspan="2">Personal: {{ d.chk_rotor_pers }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Verif. Estator, Rosca y Placas:</strong> {{ check_bool(d.chk_estator) }}</td>
+            <td colspan="2">Obs: {{ d.chk_estator_obs }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Ajuste Altura NEMA:</strong> {{ check_bool(d.chk_nema) }}</td>
+            <td colspan="2">Obs: {{ d.chk_nema_obs }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><strong>Pruebas Estanqueidad:</strong> {{ check_bool(d.chk_estanqueidad) }}</td>
+            <td colspan="2">Obs: {{ d.chk_estanqueidad_obs }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td colspan="6" class="section-header">Insumos y Tiempos de Mano de Obra</td></tr>
+        <tr>
+            <td><strong>Refrigerante:</strong> {{ d.insumo_refrig }}</td>
+            <td><strong>Sellador:</strong> {{ d.insumo_sellador }}</td>
+            <td><strong>Grasa:</strong> {{ d.insumo_grasa }}</td>
+            <td colspan="3"><strong>Pintura/Limpieza:</strong> {{ d.time_pintura }}</td>
+        </tr>
+        <tr>
+            <td colspan="2">Fab. Empalmes: {{ d.time_empalmes }}</td>
+            <td colspan="2">Prep. Estator: {{ d.time_estator }}</td>
+            <td colspan="2">Embalaje: {{ d.time_embalaje }}</td>
+        </tr>
+        <tr>
+            <td colspan="6">Instalación Fondos y Bobinas (Hrs/Pers): {{ d.time_bobinas }}</td>
+        </tr>
+    </table>
+
+    <table>
+        <tr><td colspan="4" class="section-header">Pruebas Finales y Lecturas</td></tr>
+        <tr>
+            <td width="25%" class="center bold">Aislamiento (MegaOhms)</td>
+            <td width="25%" class="center">Fase 1: {{ d.aisl_f1 }}</td>
+            <td width="25%" class="center">Fase 2: {{ d.aisl_f2 }}</td>
+            <td width="25%" class="center">Fase 3: {{ d.aisl_f3 }}</td>
+        </tr>
+        <tr>
+            <td class="center bold">Corriente en Vacío (A)</td>
+            <td class="center">IL1: {{ d.il1 }}</td>
+            <td class="center">IL2: {{ d.il2 }}</td>
+            <td class="center">IL3: {{ d.il3 }}</td>
+        </tr>
+        <tr>
+            <td><strong>Aislamiento Empalme:</strong> {{ d.aisl_empalme }}</td>
+            <td colspan="3"><strong>Observaciones:</strong> {{ d.observaciones }}</td>
+        </tr>
+    </table>
+
+    <div style="page-break-inside: avoid;">
+        <div class="footer-process">
+            <strong>PROCESO #1:</strong> Conteo, Verificación de piezas mecánicas, prueba de roscas campana y prisioneros, verificar bordes y aristas en placas del estator.<br>
+            <strong>Personal:</strong> ______________________
+        </div>
+        <div class="footer-process">
+            <strong>PROCESO #2:</strong> Preparación estator, protecciones estator, corte e instalación de fondos de mylar. Ajuste de moldes y fabricación de bobinas, amarres y empalmes.<br>
+            <strong>Personal:</strong> ______________________
+        </div>
+        <div class="footer-process">
+            <strong>PROCESO #3:</strong> Ensamblaje, ajuste de altura Nema, colocación de estoperas o sello mecánico, llenado de líquido refrigerante y pruebas de estanqueidad.<br>
+            <strong>Personal:</strong> ______________________
+        </div>
+        <div class="footer-process">
+            <strong>PROCESO #4:</strong> Pruebas en vacío, evaluar parámetros de corriente, voltaje. Limpieza y preparación para el embalaje.<br>
+            <strong>Personal:</strong> ______________________
+        </div>
+    </div>
+
+</body>
+</html>
